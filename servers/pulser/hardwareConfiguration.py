@@ -24,7 +24,7 @@ class ddsConfiguration(object):
         self.time_step = 4
         self.lattice_parameter = [4000,4000,4]
         self.state = True
-        self.boardfreqrange = args.get('boardfreqrange', (0.0, 2000.0))
+        self.boardfreqrange = args.get('boardfreqrange', (0.0, 1500.0))
         self.boardramprange = args.get('boardramprange', (0.000113687, 7.4505806))
         self.board_amp_ramp_range = args.get('board_amp_ramp_range', (0.00174623, 22.8896))
         self.boardamplrange = args.get('boardamplrange', (-37.0, 17.0))
