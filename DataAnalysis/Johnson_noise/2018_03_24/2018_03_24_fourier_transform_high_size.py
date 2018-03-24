@@ -65,12 +65,12 @@ pyplot.plot(frequency_array[1:]/1000.0, combined_fft[1:]) ##skip over the first 
 
 #pyplot.plot(x_plot,allan_model(params,x_plot),linewidth = 2.0)
    
-#pyplot.xscale('log',basex = 2)
-pyplot.yscale('log',basey = 10,subsy=[2, 3, 4, 5, 6, 7, 8, 9])
+pyplot.xscale('log',basex = 10)
+#pyplot.yscale('log',basey = 10,subsy=[2, 3, 4, 5, 6, 7, 8, 9])
      
 # ytick = [0.05,0.1,0.2,0.3]
 # pyplot.yticks(ytick,ytick)
-xtick = [0,50,100,150,200,250]
-pyplot.xticks(xtick,xtick)
+#xtick = [0,50,100,150,200,250]
+#pyplot.xticks(xtick,xtick)
  
 pyplot.show()

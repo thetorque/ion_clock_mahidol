@@ -19,7 +19,7 @@ def allan_fit(params , x, data, err):
     return (model - data)/err
 
 
-data = np.loadtxt("scope_58.csv", delimiter=",", skiprows=2)
+data = np.loadtxt("scope_40.csv", delimiter=",", skiprows=2)
 volt = data[:,1]
 volt = volt - np.average(volt)
 v_fft = np.absolute(np.fft.rfft(volt))
@@ -27,7 +27,7 @@ v_fft = np.absolute(np.fft.rfft(volt))
 time = data[:,0]
 
 time_step = time[1]-time[0]
-print time_step
+print 1/(2.0*time_step)
 frequency_array = np.linspace(0.0,1/(2.0*time_step), np.size(volt)/2.0+1)
 
 # print "data points is ", np.size(volt)
