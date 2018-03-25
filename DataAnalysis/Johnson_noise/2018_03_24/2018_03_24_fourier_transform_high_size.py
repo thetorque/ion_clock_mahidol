@@ -32,8 +32,12 @@ for i in range(N):
 #print data
 combined_fft = combined_fft/float(N)
 ## sort out data
-time = data[:,0]
+
+np.loadtxt("scope_1.csv", delimiter=",", skiprows=2)
 volt = data[:,1]
+v_fft = np.absolute(np.fft.rfft(volt))
+
+time = data[:,0]
 
 time_step = time[1]-time[0]
 frequency_array = np.linspace(0.0,1/(2.0*time_step), np.size(volt)/2.0+1)
