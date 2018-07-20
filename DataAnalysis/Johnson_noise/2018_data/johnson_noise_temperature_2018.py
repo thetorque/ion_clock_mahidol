@@ -5,6 +5,7 @@ from matplotlib import pyplot
 import matplotlib
 import lmfit
 from scipy.interpolate import interp1d
+from NTC_CURVE_2018 import T_from_R
 
 def fit_johnson_model(params, temp, res, gain_x, gain_y):
     A = params['Af'].value
@@ -15,7 +16,7 @@ def fit_johnson_model(params, temp, res, gain_x, gain_y):
         new_gain_y = gain_y/(1+(2*np.pi*gain_x*res[i]*C)**2)
         new_R[i] = np.sum(new_gain_y*interval)/area
     #print "x is " + str(x)
-    print "new_R is " + str(new_R)
+    #print "new_R is " + str(new_R)
     output = A*(res*new_R*(temp-B))
     #print x
     return output
@@ -206,16 +207,17 @@ area = np.sum(y_plot*interval)
 
 bg_noise = 0.00149
 
-v_rms = 0.001*np.array([2.677,4.254,6.200, 4.987,6.058])
-t_c = np.array([67.5,33.0,13.25, 26.25,15.25])
-res = np.array([1904.0,7000.0,17160.0, 9510.0,15770.0])
 
 ### data set 2 taken 7/20/2018 1:50PM
 
-v_rms = 0.001*np.array([2.608, 2.736, 2.924, 3.126, 3.655, 3.801, 4.109, 4.584, 5.034, 5.491, 5.915, 6.74, 7.853, 9.2, 10.46, 10.650, 10.635, 10.50])#, 10.541])#, 10.671])#, 9.2, 10.5])
-t_c = np.array([91.3, 87.0, 80.0, 74.5, 62.7, 59.8, 54.8, 47.2, 41.7, 36.1, 31.7, 24.7, 16.0, 7.4, 1.5, 0.8, 0.5, 1.3])#, 0.8,0.6])#, 7.4, 0.5])
-res = np.array([1750.0, 2000.0, 2500.0, 3000.0, 4500.0, 5000.0, 6000.0, 8000.0, 10000.0, 12500.0, 15000.0, 20200.0, 30000.0, 45000.0, 60200.0, 62700.0, 63400.0, 61000.0])
+v_rms = 0.001*np.array([2.608, 2.736, 2.924, 3.126, 3.655, 3.801, 4.109, 4.584, 5.034, 5.491, 5.915, 6.74, 7.853, 9.2,  10.650, 10.386, 7.237])#, 10.541])#, 10.671])#, 9.2, 10.5])
+#t_c = np.array([91.3, 87.0, 80.0, 74.5, 62.7, 59.8, 54.8, 47.2, 41.7, 36.1, 31.7, 24.7, 16.0, 7.4, 1.5, 0.8, 0.5, 1.3])#, 0.8,0.6])#, 7.4, 0.5])
 
+res = np.array([1750.0, 2000.0, 2500.0, 3000.0, 4500.0, 5000.0, 6000.0, 8000.0, 10000.0, 12500.0, 15000.0, 20200.0, 30000.0, 45000.0,  62700.0, 56850.0, 23400.0])
+
+res = res*10000000.0/(res+10000000.0)
+t_c = T_from_R(res/2.0)
+#print t_c
 
 
 y = v_rms**2 - bg_noise**2
@@ -224,14 +226,14 @@ y = y*1e9
 
 x = t_c
 
-yerr = 0.03*y
+yerr = 0.01*y
 
 
 params = lmfit.Parameters()
  
-params.add('Af', value = 8.2224e-3, vary = True)
+params.add('Af', value = area*1.3806e-23*4*1e9, vary = True)
 params.add('T0', value = 269.15, vary = True)
-params.add('Cf', value = 1e-11, vary = True)
+params.add('Cf', value = 4.1435e-11, vary = False)
  
 result = lmfit.minimize(fit_johnson_fit, params, args = (x, res, gain_x, gain_y, y, res))
  
@@ -239,8 +241,10 @@ fit_values  = y + result.residual
  
 lmfit.report_errors(result.params)
 
+print result.redchi
+
 C_fitted = result.params['Cf'].value
-print C_fitted
+#print C_fitted
 
 new_res = np.ones_like(res)
 for i in range(len(res)):
@@ -251,11 +255,12 @@ new_res = new_res*res
 
 y = y/new_res
 
-yerr = 0.03*y
+
+yerr = 0.02*y
 
 params = lmfit.Parameters()
  
-params.add('Af', value = 8.2224e-3, vary = True)
+params.add('Af', value = area*1.3806e-23*4*1e9, vary = True)
 params.add('T0', value = 269.15, vary = True)
  
 result = lmfit.minimize(fit_linear_fit, params, args = (x, y, yerr))
@@ -264,7 +269,7 @@ fit_values  = y + result.residual
  
 lmfit.report_errors(result.params)
 
-
+print result.redchi
 
 x_plot = np.linspace(-300,x.max(),1000)
 
