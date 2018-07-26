@@ -25,19 +25,19 @@ define how to compare data to the function
 '''
 def fit_johnson_fit(params , temp, res, gain_x, gain_y, data, err):
     model = fit_johnson_model(params , temp, res, gain_x, gain_y)
-    return (model - data)/err
+    return (model - data)#/err
 
 def fit_linear_model(params, x):
     A = params['Af'].value
     B = params['T0'].value
-    output = A*(x+B)
+    output = A*(x-B)
     return output
 '''
 define how to compare data to the function
 '''
 def fit_linear_fit(params , x, data, err):
     model = fit_linear_model(params , x)
-    return (model - data)/err
+    return (model - data)#/err
 
 
 v_in = 0.001690
@@ -229,22 +229,22 @@ x = t_c
 yerr = 0.01*y
 
 
-params = lmfit.Parameters()
+# params = lmfit.Parameters()
  
-params.add('Af', value = area*1.3806e-23*4*1e9, vary = True)
-params.add('T0', value = 269.15, vary = True)
-params.add('Cf', value = 4.1435e-11, vary = False)
+# params.add('Af', value = area*1.3806e-23*4*1e9, vary = True)
+# params.add('T0', value = 269.15, vary = True)
+# params.add('Cf', value = 4.1435e-11, vary = False)
  
-result = lmfit.minimize(fit_johnson_fit, params, args = (x, res, gain_x, gain_y, y, res))
+# result = lmfit.minimize(fit_johnson_fit, params, args = (x, res, gain_x, gain_y, y, res))
  
-fit_values  = y + result.residual
+# fit_values  = y + result.residual
  
-lmfit.report_errors(result.params)
+# lmfit.report_errors(result.params)
 
-print result.redchi
+# print result.redchi
 
-C_fitted = result.params['Cf'].value
-#print C_fitted
+# C_fitted = result.params['Cf'].value
+C_fitted = 4.1e-11
 
 new_res = np.ones_like(res)
 for i in range(len(res)):
@@ -260,8 +260,8 @@ yerr = 0.02*y
 
 params = lmfit.Parameters()
  
-params.add('Af', value = area*1.3806e-23*4*1e9, vary = True)
-params.add('T0', value = 269.15, vary = True)
+params.add('Af', value = 0.00754036, vary = True)
+params.add('T0', value = -262, vary = True)
  
 result = lmfit.minimize(fit_linear_fit, params, args = (x, y, yerr))
  
@@ -279,14 +279,14 @@ figure = pyplot.figure(0)
 #print x
 
 pyplot.errorbar(x,y,yerr, linestyle='None',markersize = 4.0,fmt='o',color='black')
-pyplot.plot(x_plot,fit_linear_model(result.params,x_plot),linewidth = 3.0)
+pyplot.plot(x_plot,fit_linear_model(result.params,x_plot),linewidth = 2.0)
 
 
 #pyplot.xscale('log')
 #pyplot.yscale('log',basey = 10,subsy=[2, 3, 4, 5, 6, 7, 8, 9])   
-pyplot.xlabel('T (Celcius)')
-pyplot.ylabel('$V^2/R$ (x $10^{-9}$ mV$^2$/$\Omega$)')
-#pyplot.ylim([0.00000005,0.001])
+pyplot.xlabel('T (degrees Celcius)')
+pyplot.ylabel('$V^2/R$ (x $10^{-15}$ V$^2$/$\Omega$)')
+pyplot.ylim([0,3.0])
 
 #pyplot.ylim([0.0,3.0])
 #pyplot.yscale('log',basey = 10,subsy=[2, 3, 4, 5, 6, 7, 8, 9]) 

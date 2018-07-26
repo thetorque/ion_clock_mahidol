@@ -277,7 +277,7 @@ params = lmfit.Parameters()
 params.add('Af', value = 2.2476e-9, vary = True)
 params.add('Bf', value = 1.0, vary = False)
 params.add('Cf', value = 4.22e-11, vary = True)
-params.add('Df', value = 3.27e-6, vary = True)
+params.add('Df', value = 3.7524e-11, vary = False)
  
 result = lmfit.minimize(fit_johnson_fit, params, args = (x, gain_x, gain_y, y, yerr))
  
